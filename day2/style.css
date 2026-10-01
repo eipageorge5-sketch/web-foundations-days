@@ -1,0 +1,138 @@
+/* 1. RESET: Apply border-box to everything */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+/* 2. BASE STYLES */
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    background-color: #f4f4f9;
+    color: #333;
+}
+
+/* 3. HEADER & NAVIGATION (Flexbox) */
+header {
+    background-color: #2c3e50;
+    color: white;
+    text-align: center;
+    padding: 20px;
+}
+
+nav ul {
+    display: flex;             /* Lays items in a row */
+    justify-content: center;   /* Centres the row */
+    gap: 16px;                 /* 16px space between links */
+    list-style-type: none;     /* Removes bullet points */
+    padding: 0;
+    margin-top: 15px;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;     /* Removes underline */
+    font-weight: bold;
+    transition: color 0.3s ease; /* Smooth transition for hover */
+}
+
+nav a:hover {
+    color: #3498db;            /* Visible hover style */
+    text-decoration: underline;
+}
+
+/* 4. MAIN CONTENT: Centred with max-width */
+main {
+    max-width: 800px;
+    margin: 20px auto;         /* 20px top/bottom, auto left/right centres it */
+    padding: 0 20px;
+}
+
+section {
+    background: white;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 8px;        /* Gives the "card" look */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* 5. FEATURES GRID: Responsive cards */
+ul.features {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+    list-style-type: none;
+    padding: 0;
+}
+
+ul.features li {
+    background-color: #e8f4f8;
+    padding: 15px;
+    border-radius: 6px;
+    text-align: center;
+}
+
+/* 6. TABLE STYLES */
+table {
+    width: 100%;
+    border-collapse: collapse; /* Merges double borders into one */
+    margin-top: 10px;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+}
+
+th {
+    background-color: #f2f2f2;
+}
+
+/* 7. FEEDBACK FORM: Stacked vertically, full width */
+form p {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;            /* Forces label to its own line */
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+input[type="text"],
+input[type="email"],
+textarea {
+    width: 100%;               /* Full width */
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+/* 8. BUTTONS: With transition */
+button {
+    background-color: #2c3e50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease; /* Smooth hover effect */
+}
+
+button:hover {
+    background-color: #3498db;
+}
+
+/* 9. MEDIA QUERY: Mobile adjustments */
+@media (max-width: 600px) {
+    header {
+        padding: 10px;         /* Reduced padding */
+        font-size: 0.9rem;     /* Reduced font size */
+    }
+    
+    nav ul {
+        flex-direction: column; /* Stack links vertically on tiny screens */
+        gap: 8px;
+    }
+}
