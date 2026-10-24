@@ -25,9 +25,6 @@ CREATE TABLE enrolments (
     UNIQUE(student_id, course_id)
 );
 
--- ==========================================
--- 2. INSERT SAMPLE DATA
--- ==========================================
 
 -- 3 Students
 INSERT INTO students (name, email) VALUES 
@@ -49,9 +46,6 @@ INSERT INTO enrolments (student_id, course_id, grade) VALUES
 (2, 3, 'C'),   -- Bob in History
 (3, 1, 'B');   -- Charlie in Math
 
--- ==========================================
--- 3. THE FIVE REQUIRED QUERIES
--- ==========================================
 
 -- Query 1: All courses for one student (by name, e.g., 'Alice Smith')
 SELECT c.title, c.description
@@ -73,9 +67,6 @@ FROM courses c
 LEFT JOIN enrolments e ON c.id = e.course_id
 GROUP BY c.id, c.title;
 
--- Query 4: Students who have no enrolments
--- (We will insert a 4th student temporarily to prove this works, or just write the query)
--- Note: To see a result for this, you can run: INSERT INTO students (name, email) VALUES ('David Lee', 'david@example.com');
 SELECT s.name, s.email
 FROM students s
 LEFT JOIN enrolments e ON s.id = e.student_id
