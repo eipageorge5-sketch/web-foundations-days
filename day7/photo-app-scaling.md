@@ -1,4 +1,4 @@
-# SnapShare Scaling Plan
+# SnapShare Scaling Design
 
 ## 1. Assumptions and Estimates
 Based on the provided starting facts, here are the calculated metrics:
