@@ -76,6 +76,7 @@ The TicketHub API exposes the following RESTful endpoints to handle browsing, ho
     "message": "Seat A1 is no longer available. Please select another seat."
   }
 }
+```
 
 
 ### 3. Data Model
@@ -130,3 +131,5 @@ CREATE TABLE orders (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (seat_id) REFERENCES seats(id) ON DELETE CASCADE
 );
+
+   SELECT * FROM seats WHERE id = ? FOR UPDATE;
