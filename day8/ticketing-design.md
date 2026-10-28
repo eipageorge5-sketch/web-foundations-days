@@ -130,5 +130,3 @@ CREATE TABLE orders (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (seat_id) REFERENCES seats(id) ON DELETE CASCADE
 );
-
-   SELECT * FROM seats WHERE id = ? FOR UPDATE;
