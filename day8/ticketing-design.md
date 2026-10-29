@@ -161,3 +161,12 @@ CREATE TABLE orders (
     │
     ▼
 [ Message Queue (RabbitMQ) ] ──► [ Background Worker ] (Cleans up expired holds, sends email receipts)
+```
+
+### How the Design Survives the Big Sale
+During the 10-minute spike (333 req/sec), the **CDN** absorbs static asset requests. The **Cache** serves the seating chart availability, meaning the database only receives actual "Hold" and "Order" write requests (around 33/sec), not the 300+ read requests from refreshing browsers. The **Row-Level Locking** ensures that even under heavy load, the database processes holds sequentially and safely, preventing double-booking without crashing.
+
+### Trade-offs
+1. **Eventual Consistency vs. Strict Consistency:** By caching seat availability in Redis, there is a slight risk that the cache shows a seat as available when it was just purchased a millisecond ago. We accept this trade-off (eventual consistency) because the 5-minute hold window and the database `UNIQUE` constraint act as the ultimate safety net, while giving 99% of users a lightning-fast experience.
+
+2. **Infrastructure Complexity vs. User Experience:** Introducing a Message Queue and Background Workers adds complexity to the system (more things to monitor and maintain). However, this trade-off is justified because it guarantees that the critical path (holding and buying a ticket) remains under 100ms, preventing the site from timing out during a high-demand sale.
