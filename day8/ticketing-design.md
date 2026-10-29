@@ -163,6 +163,21 @@ CREATE TABLE orders (
 [ Message Queue (RabbitMQ) ] ──► [ Background Worker ] (Cleans up expired holds, sends email receipts)
 ```
 
+### Preventing Double-Booking (The Critical Mechanism)
+
+Double-booking is prevented by wrapping the seat check and hold creation into a single, atomic **Database Transaction**. This ensures that the "check" and the "commit" happen together, with no other user able to interfere in between. 
+
+The step-by-step transaction workflow is:
+1. **`BEGIN`**: The application starts a database transaction.
+2. **`SELECT ... FOR UPDATE`**: The app queries the seat: `SELECT * FROM seats WHERE id = ? FOR UPDATE;`. This places an exclusive row-level lock on that specific seat. If another user's transaction is already holding this lock, the current transaction waits in a queue.
+3. **Check Availability**: The app verifies the seat is not already in the `seat_holds` or `orders` table.
+4. **`INSERT`**: If available, the app inserts the reservation: `INSERT INTO seat_holds (user_id, seat_id, expires_at) VALUES (?, ?, ?);`. Because `seat_id` has a `UNIQUE` constraint, the database will physically reject this step if a hold already exists.
+5. **`COMMIT` or `ROLLBACK`**: 
+   - If the insert succeeds, the app runs `COMMIT`, saving the hold to the database and releasing the lock.
+   - If the seat was already taken or an error occurs, the app runs `ROLLBACK`, discarding the attempt and releasing the lock immediately.
+
+**Cleanup**: A background worker runs every minute to execute `DELETE FROM seat_holds WHERE expires_at < NOW()`, instantly freeing up unpaid seats for other users.
+
 ### How the Design Survives the Big Sale
 During the 10-minute spike (333 req/sec), the CDN absorbs static asset requests. The Cache serves the seating chart availability, meaning the database only receives actual "Hold" and "Order" write requests (around 33 writes/sec), rather than being overwhelmed by 300+ read requests from refreshing browsers. The Row-Level Locking ensures that even under heavy load, the database processes holds sequentially and safely, preventing double-booking without crashing.
 
