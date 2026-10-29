@@ -135,7 +135,7 @@ CREATE TABLE orders (
    SELECT * FROM seats WHERE id = ? FOR UPDATE;
 
 ---
-
+```
 
 ## 4. Architecture and Scaling
 
