@@ -133,3 +133,31 @@ CREATE TABLE orders (
 );
 
    SELECT * FROM seats WHERE id = ? FOR UPDATE;
+
+---
+
+
+## 4. Architecture and Scaling
+
+### High-Level Architecture Diagram
+
+```text
+[ Client (Web/Mobile) ]
+         │
+         ▼
+[ CDN (Cloudflare) ] ──► (Caches static assets: HTML, CSS, JS, seat map images)
+         │
+         ▼
+[ Load Balancer ] ──► (Distributes traffic, prevents any single server from crashing)
+         │
+    ┌────┴────┐
+    ▼         ▼
+[ App Server 1 ]  [ App Server 2 ]  (Stateless, handles API logic)
+    │         │
+    ├─► [ Cache (Redis) ] ◄─┤ (Caches available seats per event to prevent DB overload)
+    │         │
+    ▼         ▼
+[ Primary Database ] ──► [ Read Replica Database ] (Handles read-only queries like browsing events)
+    │
+    ▼
+[ Message Queue (RabbitMQ) ] ──► [ Background Worker ] (Cleans up expired holds, sends email receipts)
